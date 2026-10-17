@@ -11,12 +11,14 @@ import java.util.List;
 
 public class ParkingGarage {
     private final List<String> receipts = new ArrayList<>();
-    private final FileLogger logger = new FileLogger("parking.log");
     private VehicleTariff[] tariffs;
+    private final Logger logger;
     private double total;
 
-    public ParkingGarage(VehicleTariff[] tariffs) {
+    // Both collaborators are injected from the outside
+    public ParkingGarage(VehicleTariff[] tariffs, Logger logger) {
         this.tariffs = tariffs;
+        this.logger = logger;
     }
 
     public double fee(Vehicle vehicle, int hours) {
