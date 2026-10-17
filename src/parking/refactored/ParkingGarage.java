@@ -1,9 +1,6 @@
 package parking.refactored;
 
-import parking.CashPayment;
-import parking.FileLogger;
-import parking.PaymentMethod;
-import parking.Vehicle;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,14 +8,17 @@ import java.util.List;
 
 public class ParkingGarage {
     private final List<String> receipts = new ArrayList<>();
-    private VehicleTariff[] tariffs;
-    private final Logger logger;
-    private double total;
+    private double total = 0.0;
 
-    // Both collaborators are injected from the outside
-    public ParkingGarage(VehicleTariff[] tariffs, Logger logger) {
+    private final VehicleTariff[] tariffs;
+    private final Logger logger;
+    private final ParkingReportFormatter formatter;
+
+
+    public ParkingGarage(VehicleTariff[] tariffs, Logger logger, ParkingReportFormatter formatter) {
         this.tariffs = tariffs;
         this.logger = logger;
+        this.formatter = formatter;
     }
 
     public double fee(Vehicle vehicle, int hours) {
@@ -36,8 +36,7 @@ public class ParkingGarage {
         method.pay(amount);
         total += amount;
 
-        String receipt = vehicle.getPlate() + " | " + vehicle.getType() + " | "
-                + hours + " h | " + amount + " MAD | " + method.name();
+        String receipt = formatter.formatReceipt(vehicle, amount);
         receipts.add(receipt);
         logger.log(receipt);
     }
@@ -49,11 +48,9 @@ public class ParkingGarage {
     }
 
     public String dailyReport() {
-        StringBuilder sb = new StringBuilder("=== Daily report ===\n");
-        for (String receipt : receipts) {
-            sb.append(receipt).append("\n");
-        }
-        sb.append("Total: ").append(total).append(" MAD");
-        return sb.toString();
+
+        String report = formatter.formatDailyReport(total);
+        logger.log(report);
+        return report;
     }
 }
