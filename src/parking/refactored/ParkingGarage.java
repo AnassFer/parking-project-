@@ -15,6 +15,10 @@ public class ParkingGarage {
     private VehicleTariff[] tariffs;
     private double total;
 
+    public ParkingGarage(VehicleTariff[] tariffs) {
+        this.tariffs = tariffs;
+    }
+
     public double fee(Vehicle vehicle, int hours) {
         for (int i = 0; i < tariffs.length; i++) {
             if (tariffs[i].supports(vehicle.getType())) {
