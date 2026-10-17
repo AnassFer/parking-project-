@@ -42,15 +42,10 @@ public class ParkingGarage {
         logger.log(receipt);
     }
 
-    public void cancel(Vehicle vehicle, int hours, PaymentMethod method) {
+    public void cancel(Vehicle vehicle, int hours, RefundablePaymentMethod method) {
         double amount = fee(vehicle, hours);
-        if (method instanceof CashPayment) {            // cash cannot be refunded
-            System.out.println("Refund " + amount + " MAD at the desk for "
-                    + vehicle.getPlate());
-        } else {
-            method.refund(amount);
-        }
-        total -= amount;
+        method.refund(amount);
+        logger.log("Cancelled checkout for: " + vehicle.getPlate());
     }
 
     public String dailyReport() {
